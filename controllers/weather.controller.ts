@@ -6,19 +6,10 @@ export const getWeatherDataController = async (
     res: express.Response,
     next: express.NextFunction
 ) => {
-    const city = req.query.city;
+    const city = req.city;
     
-    if (typeof city !== "string" || !city.trim()) {
-        res.status(400).json({
-            error: "City parameter is required and must be a non-empty string"
-        });
-        return;
-    }
-
-    const trimmedCity = city.trim();
-
     try {
-        const weather = await getWeatherData(trimmedCity);
+        const weather = await getWeatherData(city);
 
         res.status(200).json(weather);
     } catch (error) {
