@@ -1,8 +1,12 @@
+
 import "dotenv/config";
+import "./db/pool";
 import express from "express";
-import favoritesRouter from "./routes/favorites.route";
-import weatherRouter from "./routes/weather.route";
+import favoritesRouter from "./routes/favorites.routes";
+import weatherRouter from "./routes/weather.routes";
+import { weatherHistoryRouter } from "./routes/weather-history.routes";
 import { errorHandler } from "./middleware/error-handler";
+import { authRouter } from "./routes/auth.routes";
 
 const app = express();
 
@@ -20,6 +24,8 @@ app.use(express.json());
 
 app.use("/api/favorites", favoritesRouter);
 app.use("/api/weather", weatherRouter);
+app.use("/api/history", weatherHistoryRouter);
+app.use("/api/auth", authRouter);
 
 app.use(errorHandler)
 

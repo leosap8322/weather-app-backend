@@ -8,6 +8,7 @@ export const errorHandler = (
     res: express.Response,
     next: express.NextFunction
 ) => {
+    console.error(error);
     if (error instanceof z.ZodError) {
         res.status(502).json({
             message: "Invalid response from weather service"
