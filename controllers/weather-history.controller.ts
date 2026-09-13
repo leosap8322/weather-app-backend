@@ -8,6 +8,8 @@ export const getWeatherHistoryController = async (
 ) => {
     const userId = req.userId;
 
+    console.log("CONTROLLER USER ID:", req.userId);
+
     try {
         const history = await getUserWeatherHistory(userId);
 

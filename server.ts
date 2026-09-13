@@ -7,6 +7,7 @@ import weatherRouter from "./routes/weather.routes";
 import { weatherHistoryRouter } from "./routes/weather-history.routes";
 import { errorHandler } from "./middleware/error-handler";
 import { authRouter } from "./routes/auth.routes";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -21,6 +22,7 @@ const logger = (
 
 app.use(logger);
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/favorites", favoritesRouter);
 app.use("/api/weather", weatherRouter);
