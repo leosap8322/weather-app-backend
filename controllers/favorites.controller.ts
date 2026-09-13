@@ -1,10 +1,12 @@
-import { createFavorite } from "../services/favorites.service";
+import { createFavorite, deleteFavorite, getFavorites } from "../services/favorites.service";
 import express from "express";
 
-export const createFavoriteController = (
+export const createFavoriteController = async (
     req: express.Request, 
-    res: express.Response
+    res: express.Response,
+    next: express.NextFunction
 ) => {
+    const userId = req.userId;
     const { city } = req.body;
 
     if (!city || typeof city !== "string") {
@@ -14,10 +16,62 @@ export const createFavoriteController = (
         return;
     }
 
-    const favorite = createFavorite(city);
+    try {
+        const favorite = await createFavorite(userId, city);
 
-    res.status(201).json({
-        message: "Favorite city added",
-        favorite
-    });
+        res.status(201).json({
+            message: "Favorite city added",
+            favorite
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getFavoritesController = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) => {
+    const userId = req.userId;
+
+    try {
+        const favorites = await getFavorites(userId);
+        res.status(200).json({ favorites });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const deleteFavoriteController = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) => {
+    const userId = req.userId;
+    const favoriteId = Number(req.params.favoriteId);
+
+    if (!Number.isInteger(favoriteId) || favoriteId <= 0) {
+            res.status(400).json({
+                error: "Favorite ID must be a positive integer"
+            });
+            
+        return;
+    }
+
+    try{
+        const favorite = await deleteFavorite(favoriteId, userId);
+
+        if (!favorite) {
+            res.status(404).json({
+                error: "Favorite city not found"
+            });
+            return;
+        }
+        res.status(200).json({
+            message: "Favorite city deleted"
+        });
+    } catch (error) {
+        next(error);
+    }
 }
