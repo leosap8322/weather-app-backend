@@ -13,3 +13,18 @@ export const getWeatherHistory = async (userId: number) => {
 
     return result.rows;
 };
+
+export const createWeatherHistory = async (
+    userId: number,
+    city: string
+) => {
+    const result = await pool.query(
+        `
+        INSERT INTO weather_history (user_id, city)
+        VALUES ($1, $2)
+        RETURNING *
+        `,
+        [userId, city]
+    );
+    return result.rows[0];
+};

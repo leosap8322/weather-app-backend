@@ -1,5 +1,5 @@
-import { getWeatherData } from "../services/weather.service";
 import express from "express";
+import { searchWeather } from "../services/weather-search.service";
 
 export const getWeatherDataController = async (
     req: express.Request,
@@ -9,7 +9,7 @@ export const getWeatherDataController = async (
     const city = req.city;
     
     try {
-        const weather = await getWeatherData(city);
+        const weather = await searchWeather(req.userId, city);
 
         res.status(200).json(weather);
     } catch (error) {
