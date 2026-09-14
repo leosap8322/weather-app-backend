@@ -1,4 +1,5 @@
-import { createFavorite, deleteFavorite, getFavorites } from "../services/favorites.service";
+import { string } from "zod";
+import { createFavorite, deleteFavorite, getFavorites, importFavorites } from "../services/favorites.service";
 import express from "express";
 
 export const createFavoriteController = async (
@@ -70,6 +71,35 @@ export const deleteFavoriteController = async (
         }
         res.status(200).json({
             message: "Favorite city deleted"
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const importFavoritesController = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) => {
+    const { cities } = req.body;
+    if (
+        !Array.isArray(cities) ||
+        cities.length === 0 ||
+        cities.some(item => typeof item !== "string")
+    ) {
+        res.status(400).json({
+            error: "cities must be a non-empty array"
+        });
+        return;
+    }
+
+    try {
+        const favorites = await importFavorites(req.userId, cities);
+
+        res.status(201).json({
+            message: "Favorites imported successfully",
+            favorites
         });
     } catch (error) {
         next(error);
