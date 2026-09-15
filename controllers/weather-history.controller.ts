@@ -7,11 +7,40 @@ export const getWeatherHistoryController = async (
     next: express.NextFunction
 ) => {
     const userId = req.userId;
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 20)
 
-    console.log("CONTROLLER USER ID:", req.userId);
+    if (
+        !Number.isInteger(page) ||
+        page < 1 ||
+        !Number.isInteger(limit) ||
+        limit < 1 ||
+        limit > 100
+    ) {
+        res.status(400).json({
+            error: "Invalid pagination parameters"
+        });
+        return;
+    }
 
+
+    const sort = req.query.sort ?? "date";
+    const order = req.query.order ?? "desc";
+
+    if (typeof sort !== "string" || typeof order !== "string") {
+        res.status(400).json({
+            error: "Invalid sort or order"
+        });
+        return;
+    }
     try {
-        const history = await getUserWeatherHistory(userId);
+        const history = await getUserWeatherHistory(
+            userId,
+            page,
+            limit,
+            sort,
+            order
+        );
 
         res.status(200).json(history);
     } catch (error) {

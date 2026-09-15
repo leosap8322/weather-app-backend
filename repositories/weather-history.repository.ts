@@ -1,14 +1,25 @@
 import { pool } from "../db/pool";
 
-export const getWeatherHistory = async (userId: number) => {
+type SortBy = "city" | "date";
+type SortOrder = "ASC" | "DESC";
+
+export const getWeatherHistory = async (
+    userId: number,
+    limit: number,
+    offset: number,
+    sortBy: SortBy,
+    order: SortOrder
+) => {
     const result = await pool.query(
         `
         SELECT *
         FROM weather_history
         WHERE user_id = $1
-        ORDER BY searched_at DESC
+        ORDER BY ${sortBy} ${order}
+        LIMIT $2
+        OFFSET $3
         `,
-        [userId]
+        [userId,limit,offset]
     );
 
     return result.rows;
