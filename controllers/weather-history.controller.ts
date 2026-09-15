@@ -27,12 +27,26 @@ export const getWeatherHistoryController = async (
     const sort = req.query.sort ?? "date";
     const order = req.query.order ?? "desc";
 
-    if (typeof sort !== "string" || typeof order !== "string") {
+    if (
+        typeof sort !== "string" ||
+        (sort !== "city" && sort !== "date")
+    ) {
         res.status(400).json({
-            error: "Invalid sort or order"
+            error: "Invalid sort parameter"
         });
         return;
     }
+
+    if (
+        typeof order !== "string" ||
+        (order !== "asc" && order !== "desc")
+    ){
+        res.status(400).json({
+            error: "Invalid order parameter"
+        });
+        return;
+    }
+
     try {
         const history = await getUserWeatherHistory(
             userId,

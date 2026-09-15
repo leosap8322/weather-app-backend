@@ -1,7 +1,8 @@
 import { AppError } from "../errors/AppError.js";
 import { createWeatherHistory, getWeatherHistory } from "../repositories/weather-history.repository.js";
 
-
+type Sort = "city" | "date";
+type Order = "asc" | "desc";
 
 export const getUserWeatherHistory = async (
     userId: number,
@@ -22,14 +23,15 @@ export const getUserWeatherHistory = async (
     const sortMap = {
         city: "city",
         date: "searched_at"
-    };
+    } as const;
 
     const orderMap = {
         asc: "ASC",
         desc: "DESC"
-    };
+    } as const;
 
     const sortBy = sortMap[sort];
+    
     const sortOrder = orderMap[order];
 
     const offset = (page - 1) * limit;

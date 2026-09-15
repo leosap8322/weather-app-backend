@@ -1,6 +1,6 @@
 import { pool } from "../db/pool";
 
-type SortBy = "city" | "date";
+type SortBy = "city" | "searched_at";
 type SortOrder = "ASC" | "DESC";
 
 export const getWeatherHistory = async (
